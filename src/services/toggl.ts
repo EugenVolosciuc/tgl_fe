@@ -38,31 +38,25 @@ export const getTasks = async ({
 	until: Date;
 	teamId: string;
 	workspaceId: string;
-}): Promise<{ data: Task | null; error: any }> => {
+}): Promise<Task[]> => {
 	const formattedStartDate = dayjs(since).format('YYYY-MM-DD');
 	const formattedEndDate = dayjs(until).format('YYYY-MM-DD');
 
 	const { authToken } = getRequestData();
 
-	try {
-		const response = await fetch(
-			`https://api.plan.toggl.space/api/${API_VERSION}/${workspaceId}/tasks?since=${formattedStartDate}&until=${formattedEndDate}&short=true&team=${teamId}`,
-			{
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${authToken}`,
-				},
-			}
-		);
-
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
+	const response = await fetch(
+		`https://api.plan.toggl.space/api/${API_VERSION}/${workspaceId}/tasks?since=${formattedStartDate}&until=${formattedEndDate}&short=true&team=${teamId}`,
+		{
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authToken}`,
+			},
 		}
+	);
 
-		const data = await response.json();
-
-		return { data, error: null };
-	} catch (error) {
-		return { data: null, error };
+	if (!response.ok) {
+		throw new Error('Network response was not ok');
 	}
+
+	return await response.json();
 };

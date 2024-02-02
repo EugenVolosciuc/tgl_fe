@@ -3,6 +3,8 @@ import isToday from 'dayjs/plugin/isToday';
 
 dayjs.extend(isToday);
 
+export const DISPLAY_DATE_FORMAT = 'YYYY-MM-DD';
+
 export const getDaysBetween = (start: Dayjs, end: Dayjs) => {
 	const range = [];
 	let current = start;
