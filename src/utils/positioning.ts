@@ -1,28 +1,105 @@
 import type { Task } from '@/types';
+import dayjs from 'dayjs';
+import { checkDateRangesOverlap } from './date-utils';
 
-const TASK_HEIGHT = 64; // px
+export const TASK_HEIGHT = 64; // px
 
-const isElementWithAttributeBetweenXCoordinates = (
-	xStart: number,
-	xEnd: number
-) => {
-	const elementsWithAttribute = document.querySelectorAll(`[data-taskid]`);
+// const isElementWithAttributeBetweenXCoordinates = (
+// 	xStart: number,
+// 	xEnd: number
+// ) => {
+// 	const elementsWithAttribute = document.querySelectorAll(`[data-taskid]`);
 
-	for (const element of elementsWithAttribute) {
-		const rect = element.getBoundingClientRect();
-		const elementLeft = rect.left;
-		const elementRight = rect.right;
+// 	for (const element of elementsWithAttribute) {
+// 		const rect = element.getBoundingClientRect();
+// 		const elementLeft = rect.left;
+// 		const elementRight = rect.right;
 
-		// Check if the element is between xStart and xEnd
-		if (elementLeft >= xStart && elementRight <= xEnd) {
-			return element;
+// 		// Check if the element is between xStart and xEnd
+// 		if (elementLeft >= xStart && elementRight <= xEnd) {
+// 			return element;
+// 		}
+// 	}
+
+// 	return null;
+// };
+
+/**
+ * Get the task rows, each including the task it should have
+ * @param tasks Tasks sorted by weight in descending order
+ * @returns `Task['id'][][]`
+ */
+// export const createTaskRows = (tasks: Task[]) => {
+// 	let rows: Task[][] = [[]];
+
+// 	for (let t = 0; t < tasks.length; t++) {
+// 		const checkedTask = tasks[t];
+// 		for (let r = 0; r < rows.length; r++) {
+// 			// Row is empty, we can surely add a task here
+// 			if (rows[r].length === 0) {
+// 				rows[r].push(checkedTask);
+// 				console.log('row was empty, added task');
+// 			} else {
+// 				// Go through the tasks in this row and check if there are any tasks that have an overlapping interval
+// 				// If they overlap, check the next row
+// 				const cannotPlaceTaskInRow = rows[r].some((task) =>
+// 					checkDateRangesOverlap(
+// 						dayjs(task.start_date),
+// 						dayjs(task.end_date),
+// 						dayjs(checkedTask.start_date),
+// 						dayjs(checkedTask.end_date)
+// 					)
+// 				);
+
+// 				console.log('checkedTask', checkedTask);
+// 				console.log('cannotPlaceTaskInRow', cannotPlaceTaskInRow);
+// 				console.log('-----');
+// 				if (r === rows.length - 1) rows.push([]);
+
+// 				if (cannotPlaceTaskInRow) continue;
+
+// 				rows[r].push(checkedTask);
+// 			}
+// 		}
+// 	}
+
+// 	return rows;
+// };
+
+export const createTaskRows = (tasks: Task[]) => {
+	let rows: Task[][] = [[]];
+
+	for (let t = 0; t < tasks.length; t++) {
+		const checkedTask = tasks[t];
+		let taskPlaced = false;
+
+		for (let r = 0; r < rows.length; r++) {
+			const cannotPlaceTaskInRow = rows[r].some((task) =>
+				checkDateRangesOverlap(
+					dayjs(task.start_date),
+					dayjs(task.end_date),
+					dayjs(checkedTask.start_date),
+					dayjs(checkedTask.end_date)
+				)
+			);
+
+			if (!cannotPlaceTaskInRow) {
+				rows[r].push(checkedTask);
+				taskPlaced = true;
+				break; // Break out of the loop once the task is placed in a row
+			}
+		}
+
+		if (!taskPlaced) {
+			// If the task couldn't be placed in any existing row, create a new row
+			rows.push([checkedTask]);
 		}
 	}
 
-	return null;
+	return rows;
 };
 
-export const getPositionAndSizeOfTask = (task: Task, allTasks: Task[]) => {
+export const getPositionAndSizeOfTask = (task: Task) => {
 	// Horizontal positioning
 	// Get the start and end columns
 	const startCol = document.querySelector(`[data-date="${task.start_date}"]`)!;
@@ -47,7 +124,6 @@ export const getPositionAndSizeOfTask = (task: Task, allTasks: Task[]) => {
 	//          should replace tasks
 	//    } else check next row
 	// } else put task in current row
-	console.log('task.weight', task.name, task.weight);
 
 	return {
 		left: xStart,
