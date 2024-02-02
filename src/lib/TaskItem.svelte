@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import { getColorBasedOnColorId } from '@/utils/color';
 	import type { Task } from '@/types';
 	import { getPositionAndSizeOfTask } from '@/utils/positioning';
@@ -7,12 +8,15 @@
 
 	const bgColor = getColorBasedOnColorId(task.color);
 
-	const { left, width, top, height } = getPositionAndSizeOfTask(task);
+	const tasks = getContext<Task[]>('tasks');
+
+	const { left, width, top, height } = getPositionAndSizeOfTask(task, tasks);
 </script>
 
 <!-- Step 2: Add the tasks to the calendar -->
 <!-- First horizontally (using the data-date attribute), then vertically (using the weight of a task?) -->
 <div
+	data-taskId={task.id}
 	style="background-color:{bgColor}; height: {height}px; left: {left}px; width: {width}px; top: {top}px; height: {height}px;"
 	class="absolute rounded px-[6px] py-[3px]">
 	<p class="text-white">{task.name}</p>

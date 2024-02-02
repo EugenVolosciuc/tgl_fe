@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { setContext, onMount } from 'svelte';
 	import dayjs from 'dayjs';
 
 	import * as TogglService from '@/services/toggl';
@@ -9,6 +9,8 @@
 	import type { Task } from '@/types';
 
 	let tasks: Task[] = [];
+
+	setContext('tasks', tasks);
 
 	const startDate = dayjs().subtract(2, 'week');
 	const endDate = dayjs().add(2, 'week');

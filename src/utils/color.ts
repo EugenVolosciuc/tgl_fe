@@ -6,7 +6,7 @@ export const getColorBasedOnColorId = (colorId: number) => {
 	// Map the color ID to RGB values
 	const red = Math.round((colorId / MAX_COLOR_ID) * 255);
 	const green = Math.round(((MAX_COLOR_ID - colorId) / MAX_COLOR_ID) * 255);
-	const blue = 0;
+	const blue = Math.round((colorId / MAX_COLOR_ID) * 255);
 
 	// Return the RGB color as a string
 	return `rgb(${red}, ${green}, ${blue})`;
