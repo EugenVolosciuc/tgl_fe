@@ -4,25 +4,22 @@ import { checkDateRangesOverlap } from './date-utils';
 
 export const TASK_HEIGHT = 64; // px
 
-// const isElementWithAttributeBetweenXCoordinates = (
-// 	xStart: number,
-// 	xEnd: number
-// ) => {
-// 	const elementsWithAttribute = document.querySelectorAll(`[data-taskid]`);
+export const isElementBetweenXCoordinates = (xStart: number, xEnd: number) => {
+	const elements = document.querySelectorAll(`[data-taskid]`);
 
-// 	for (const element of elementsWithAttribute) {
-// 		const rect = element.getBoundingClientRect();
-// 		const elementLeft = rect.left;
-// 		const elementRight = rect.right;
+	for (const element of elements) {
+		const rect = element.getBoundingClientRect();
+		const elementLeft = rect.left;
+		const elementRight = rect.right;
 
-// 		// Check if the element is between xStart and xEnd
-// 		if (elementLeft >= xStart && elementRight <= xEnd) {
-// 			return element;
-// 		}
-// 	}
+		// Check if the element is between xStart and xEnd
+		if (elementLeft >= xStart && elementRight <= xEnd) {
+			return element;
+		}
+	}
 
-// 	return null;
-// };
+	return null;
+};
 
 /**
  * Get the task rows, each including the task it should have
