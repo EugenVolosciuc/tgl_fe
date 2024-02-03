@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@neodrag/svelte':
+    specifier: ^2.0.3
+    version: 2.0.3
   dayjs:
     specifier: ^1.11.10
     version: 1.11.10
@@ -46,9 +49,6 @@ devDependencies:
   svelte-check:
     specifier: 3.6.3
     version: 3.6.3(postcss@8.4.33)(svelte@4.2.9)
-  svelte-dnd-action:
-    specifier: ^0.9.38
-    version: 0.9.38(svelte@4.2.9)
   tailwindcss:
     specifier: ^3.4.1
     version: 3.4.1
@@ -708,6 +708,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
+
+  /@neodrag/svelte@2.0.3:
+    resolution: {integrity: sha512-/7k4Byv6guBs6NpfzOnqOep8PM3HjhPg1rRPNsJsGNGDXSJNB+tn9NAi/vTXJBos3vN9XPlbnr3g/lNKGfg+Jg==}
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2302,14 +2306,6 @@ packages:
       - sass
       - stylus
       - sugarss
-    dev: true
-
-  /svelte-dnd-action@0.9.38(svelte@4.2.9):
-    resolution: {integrity: sha512-L80YR+aknn54LmjPKFELYGDkZhed5ReBzH2xe61zFNGfQyoeXbFB1hs69QWgBIYufZPWUhAiVXIMhP7UQWs1dw==}
-    peerDependencies:
-      svelte: '>=3.23.0'
-    dependencies:
-      svelte: 4.2.9
     dev: true
 
   /svelte-hmr@0.15.3(svelte@4.2.9):

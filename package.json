@@ -22,13 +22,13 @@
 		"prettier-plugin-tailwindcss": "0.5.11",
 		"svelte": "4.2.9",
 		"svelte-check": "3.6.3",
-		"svelte-dnd-action": "^0.9.38",
 		"tailwindcss": "^3.4.1",
 		"tslib": "2.6.2",
 		"typescript": "5.3.3",
 		"vite": "5.0.12"
 	},
 	"dependencies": {
+		"@neodrag/svelte": "^2.0.3",
 		"dayjs": "^1.11.10"
 	}
 }
