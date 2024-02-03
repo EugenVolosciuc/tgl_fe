@@ -6,7 +6,10 @@
 	import { getPositionAndSizeOfTask } from '@/utils/positioning';
 	import { taskRows } from '@/utils/stores';
 	import dayjs from 'dayjs';
-	import { DISPLAY_DATE_FORMAT } from '@/utils/date-utils';
+	import {
+		DISPLAY_DATE_FORMAT,
+		checkDateRangesOverlap,
+	} from '@/utils/date-utils';
 
 	export let task: Task;
 	export let rowIndex: number;
@@ -15,17 +18,22 @@
 	const gridSize = 64;
 	const bgColor = getColorBasedOnColorId(task.color);
 	let previousDaysOffset = 0;
+	let dragPosition = { x: 0, y: 0 };
+	let previousDragPosition = { x: 0, y: 0 };
 
 	// Initial positioning
 	let { left, width, top, height } = getPositionAndSizeOfTask(task);
 
-	const handleDragEnd = (data: DragEventData) => {
-		const offsetDays = data.offsetX / gridSize;
+	const handleDragEnd = ({ offsetX, offsetY }: DragEventData) => {
+		const offsetDays = offsetX / gridSize;
 
 		const daysMovedSinceLastDrag = offsetDays - previousDaysOffset;
-		previousDaysOffset = offsetDays;
 
 		taskRows.update((prevTaskRows) => {
+			const updatedStartDate = dayjs(task.start_date)
+				.add(daysMovedSinceLastDrag, 'days')
+				.format(DISPLAY_DATE_FORMAT);
+
 			const updatedTask: Task = {
 				...task,
 				start_date: dayjs(task.start_date)
@@ -41,11 +49,32 @@
 				return prevTask;
 			});
 
+			// Need to keep tasks from overlapping
+			const taskDateRangesOverlapWithAnotherTask = prevTaskRows[rowIndex].some(
+				(prevTask) => {
+					// Task cannot overlap with itself
+					if (prevTask.id === updatedTask.id) return false;
+
+					return checkDateRangesOverlap(
+						dayjs(updatedTask.start_date),
+						dayjs(updatedTask.end_date),
+						dayjs(prevTask.start_date),
+						dayjs(prevTask.end_date)
+					);
+				}
+			);
+
+			if (taskDateRangesOverlapWithAnotherTask) {
+				dragPosition = previousDragPosition;
+				console.error('Could not move task, it overlaps with another task.');
+				return prevTaskRows;
+			}
+
 			console.log(
 				`Updated dates from ${task.start_date} - ${task.end_date} to ${updatedTask.start_date} - ${updatedTask.end_date} for task "${task.name}"`
 			);
-
-			// TODO: Need to stop tasks from overlapping
+			previousDragPosition = { x: offsetX, y: offsetY };
+			previousDaysOffset = offsetDays;
 
 			return Object.assign([], prevTaskRows, { [rowIndex]: updatedRow });
 		});
@@ -62,6 +91,10 @@
 		axis: 'x',
 		grid: [gridSize, gridSize],
 		onDragEnd: handleDragEnd,
+		position: dragPosition,
+		onDrag: ({ offsetX, offsetY }) => {
+			dragPosition = { x: offsetX, y: offsetY };
+		},
 	}}
 	role="cell"
 	tabindex="0">
