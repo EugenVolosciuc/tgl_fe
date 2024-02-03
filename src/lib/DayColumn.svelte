@@ -7,18 +7,6 @@
 	export let isFirstDay: boolean;
 
 	const isWeekend = checkIsWeekend(date);
-
-	const handleDragEnter = () => {
-		//
-	};
-
-	const handleDrop = (
-		event: DragEvent & {
-			currentTarget: EventTarget & HTMLDivElement;
-		}
-	) => {
-		console.log('drop event', event);
-	};
 </script>
 
 <div
@@ -27,7 +15,4 @@
 	class:bg-slate-100={isWeekend}
 	class:border-l-[1px]={isFirstDay}
 	role="cell"
-	tabindex="0"
-	on:dragenter={(event) => console.log(event)}
-	on:dragleave={(event) => console.log(event)}
-	on:drop={handleDrop} />
+	tabindex="0" />
